@@ -1,0 +1,111 @@
+#include <iostream>
+#include <string>
+#include <thread>
+#include <chrono>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+
+// Базовый виртуальный класс Device
+class Device {
+protected:
+    std::string Data;
+
+    // Генерация случайной строки Data
+    std::string generateRandomString(int minLength, int maxLength, const std::vector<char>& validChars) {
+        int length = rand() % (maxLength - minLength + 1) + minLength; // случайная длина от minLength до maxLength
+        std::string result;
+        for (int i = 0; i < length; ++i) {
+            result += validChars[rand() % validChars.size()]; // случайный символ из validChars
+        }
+        return result;
+    
+public:
+    Device() {
+        // Устройство будет инициализировано с соответствующим набором символов
+    }
+
+    virtual void getData() const = 0;
+
+    const std::string& getDataString() const {
+        return Data;
+    }
+};
+
+// Класс DeviceA с n = 1 секунда, только цифры
+class DeviceA : public Device {
+public:
+    DeviceA() {
+        // Генерация строки из цифр длиной от 5 до 12
+        std::vector<char> digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        Data = generateRandomString(5, 12, digits);
+    }
+
+    void getData() const override {
+        for (char c : Data) {
+            std::cout << c << std::flush;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        std::cout << std::endl;
+    }
+};
+
+// Класс DeviceB с n = 2 секунды, только буквы
+class DeviceB : public Device {
+public:
+    DeviceB() {
+        // Генерация строки из букв (верхний и нижний регистр) длиной от 5 до 12
+        std::vector<char> letters;
+        for (char c = 'a'; c <= 'z'; ++c) letters.push_back(c);
+        for (char c = 'A'; c <= 'Z'; ++c) letters.push_back(c);
+        
+        Data = generateRandomString(5, 12, letters);
+    }
+
+    void getData() const override {
+        for (char c : Data) {
+            std::cout << c << std::flush;
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+        std::cout << std::endl;
+    }
+};
+
+// Класс DeviceC с n = 3 секунды, только знаки препинания
+class DeviceC : public Device {
+public:
+    DeviceC() {
+        // Генерация строки из знаков препинания длиной от 5 до 12
+        std::vector<char> punctuation = {'.', ',', '!', '?', ';', ':', '-', '(', ')', '[', ']', '{', '}'};
+        Data = generateRandomString(5, 12, punctuation);
+    }
+
+    void getData() const override {
+        for (char c : Data) {
+            std::cout << c << std::flush;
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    srand(time(0)); // Инициализация генератора случайных чисел
+
+    // Создаем устройства
+    DeviceA deviceA;
+    DeviceB deviceB;
+    DeviceC deviceC;
+
+    // Выводим данные с задержкой для каждого устройства
+    std::cout << "Device A (Digits): ";
+    deviceA.getData();
+
+    std::cout << "Device B (Letters): ";
+    deviceB.getData();
+
+    std::cout << "Device C (Punctuation): ";
+    deviceC.getData();
+
+    return 0;
+}
