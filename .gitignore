@@ -1,0 +1,21 @@
+# Ignore build directory
+build
+
+# Ignore CMake files
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+Makefile
+.cmake
+
+# Ignore compiled binaries
+DeviceData
+
+# Ignore IDE-specific files (for example, Visual Studio, JetBrains, etc.)
+.vscode
+.idea
+
+# Ignore OS-generated files (e.g., macOS, Windows)
+.DS_Store          # macOS Finder-specific
+Thumbs.db          # Windows Explorer-specific
+.swp              # Vim swap files
